@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>IDS</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="../static/styles.css" />
+    <link rel="shortcut icon" href="../static/icon.jpg" type="image/x-icon" />
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg bg-body-tertiary" data-bs-theme="dark">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="/">
+          <img
+            src="../static/icon.jpg"
+            alt="Logo"
+            width="30"
+            height="30"
+            class="d-inline-block align-text-top rounded-circle"
+          />
+          IDS
+        </a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="/"> Home </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('pda') }}">Preliminary Data Analysis</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('features') }}">Features Description</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/analytics">Analytics</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/logs">Attack Logs</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('prediction') }}"> Manual Prediction </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <!-- ================= HERO SECTION ================= -->
+
+    <div class="text-center mb-5">
+
+        <h1 class="display-5 fw-bold">
+            🛡️ Real-Time Intrusion Detection System
+        </h1>
+
+        <h5 class="text-secondary">
+            Machine Learning Based Network Security Monitoring
+        </h5>
+
+        <p class="mt-4">
+            This system continuously monitors simulated network traffic,
+            detects malicious activities using Machine Learning models,
+            and provides live security monitoring through a real-time dashboard.
+        </p>
+
+    </div>
+
+<!-- ================= END HERO ================= -->
+
+<!-- ================= SYSTEM STATUS ================= -->
+
+    <div class="container mb-5">
+
+        <h3 class="text-center mb-4">
+            System Status
+        </h3>
+
+        <div class="row text-center">
+
+            <div class="col-md-3 mb-3">
+                <div class="card shadow-sm p-3">
+                    <h4>🟢</h4>
+                    <h5>Traffic Generator</h5>
+                    <p class="text-success fw-bold">
+                        ONLINE
+                    </p>
+                </div>
+            </div>
+
+
+            <div class="col-md-3 mb-3">
+                <div class="card shadow-sm p-3">
+                    <h4>🟢</h4>
+                    <h5>ML Detection Engine</h5>
+                    <p class="text-success fw-bold">
+                        ACTIVE
+                    </p>
+                </div>
+            </div>
+
+
+            <div class="col-md-3 mb-3">
+                <div class="card shadow-sm p-3">
+                    <h4>🟢</h4>
+                    <h5>Live Monitoring</h5>
+                    <p class="text-success fw-bold">
+                        RUNNING
+                    </p>
+                </div>
+            </div>
+
+
+            <div class="col-md-3 mb-3">
+                <div class="card shadow-sm p-3">
+                    <h4>🟢</h4>
+                    <h5>Logging System</h5>
+                    <p class="text-success fw-bold">
+                        ENABLED
+                    </p>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+<!-- ================= END STATUS ================= -->
+
+    <!-- ================= SYSTEM HIGHLIGHTS ================= -->
+
+    <div class="container mb-5">
+
+        <h2 class="text-center mb-4">
+            System Highlights
+        </h2>
+
+        <div class="row">
+
+            <div class="col-md-4 mb-3">
+                <div class="card shadow h-100">
+                    <div class="card-body text-center">
+                        <h2>🤖</h2>
+                        <h4>Machine Learning</h4>
+
+                        <p>
+                            Detects malicious network traffic using
+                            Decision Tree,
+                            Logistic Regression and
+                            Random Forest algorithms.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4 mb-3">
+                <div class="card shadow h-100">
+                    <div class="card-body text-center">
+                        <h2>📡</h2>
+                        <h4>Live Monitoring</h4>
+
+                        <p>
+                            Continuously monitors simulated
+                            network traffic and processes
+                            incoming packets in real time.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4 mb-3">
+                <div class="card shadow h-100">
+                    <div class="card-body text-center">
+                        <h2>📊</h2>
+                        <h4>Security Logs</h4>
+
+                        <p>
+                            Stores all detections with
+                            timestamps and displays
+                            them through a live dashboard.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<!-- ================= END HIGHLIGHTS ================= -->
+
+
+    <footer class="footer text-center mt-5">
+    <h6 class="footer__title">
+        © 2026 Real-Time Intrusion Detection System
+    </h6>
+    <p style="font-size:14px;">
+        Final Year Project | Cybersecurity & Machine Learning
+    </p>
+    </footer>
+    <script>
+      // Event listener for the attackType dropdown
+      document
+        .getElementById("attackType")
+        .addEventListener("change", function () {
+          // Get the selected value
+          var selectedAttack = this.value;
+
+          // Update values based on the selected attack type
+          switch (selectedAttack) {
+            case "dos":
+              document.getElementById("duration").value = 0;
+              document.getElementById("service").value = "ecr_i";
+              document.getElementById("srcBytes").value = 1032;
+              document.getElementById("loggedIn").value = 0;
+              document.getElementById("sameDstnCount").value = 255;
+              document.getElementById("protocolType").value = "icmp";
+              document.getElementById("flag").value = "SF";
+              document.getElementById("dstnBytes").value = 0;
+              document.getElementById("wrongFragment").value = 0;
+              document.getElementById("samePortCount").value = 511;
+              break;
+            case "normal":
+              document.getElementById("duration").value = 0;
+              document.getElementById("service").value = "urp_i";
+              document.getElementById("srcBytes").value = 37;
+              document.getElementById("loggedIn").value = 0;
+              document.getElementById("sameDstnCount").value = 4;
+              document.getElementById("protocolType").value = "icmp";
+              document.getElementById("flag").value = "SF";
+              document.getElementById("dstnBytes").value = 4233;
+              document.getElementById("wrongFragment").value = 0;
+              document.getElementById("samePortCount").value = 1;
+              break;
+            case "u2r":
+              document.getElementById("duration").value = 58;
+              document.getElementById("service").value = "telnet";
+              document.getElementById("srcBytes").value = 2615;
+              document.getElementById("loggedIn").value = 1;
+              document.getElementById("sameDstnCount").value = 1;
+              document.getElementById("protocolType").value = "tcp";
+              document.getElementById("flag").value = "SF";
+              document.getElementById("dstnBytes").value = 4233;
+              document.getElementById("wrongFragment").value = 0;
+              document.getElementById("samePortCount").value = 1;
+
+              break;
+            case "r2l":
+              document.getElementById("duration").value = 0;
+              document.getElementById("service").value = "urp_i";
+              document.getElementById("srcBytes").value = 37;
+              document.getElementById("loggedIn").value = 0;
+              document.getElementById("sameDstnCount").value = 4;
+              document.getElementById("protocolType").value = "icmp";
+              document.getElementById("flag").value = "SF";
+              document.getElementById("dstnBytes").value = 4233;
+              document.getElementById("wrongFragment").value = 0;
+              document.getElementById("samePortCount").value = 1;
+              break;
+
+            case "probe":
+              document.getElementById("duration").value = 1;
+              document.getElementById("service").value = "private";
+              document.getElementById("srcBytes").value = 0;
+              document.getElementById("loggedIn").value = 0;
+              document.getElementById("sameDstnCount").value = 178;
+              document.getElementById("protocolType").value = "tcp";
+              document.getElementById("flag").value = "RSTR";
+              document.getElementById("dstnBytes").value = 0;
+              document.getElementById("wrongFragment").value = 0;
+              document.getElementById("samePortCount").value = 2;
+            default:
+              // Handle default case
+              break;
+          }
+        });
+    </script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+      crossorigin="anonymous"
+    ></script>
+  </body>
+</html>

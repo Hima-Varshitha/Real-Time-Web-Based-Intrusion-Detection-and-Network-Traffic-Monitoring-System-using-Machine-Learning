@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Live Attack Logs</title>
+
+    <!-- auto refresh every 3 seconds -->
+    <meta http-equiv="refresh" content="5">
+
+    <style>
+        body {
+            font-family: Arial;
+            margin: 20px;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #333;
+            color: white;
+        }
+
+        .attack {
+            background-color: #ffcccc;
+        }
+
+        .normal {
+            background-color: #ccffcc;
+        }
+    </style>
+</head>
+
+<body>
+
+<h2>🔥 Live Intrusion Detection Logs</h2>
+
+{{ table_html | safe }}
+
+</body>
+</html>
