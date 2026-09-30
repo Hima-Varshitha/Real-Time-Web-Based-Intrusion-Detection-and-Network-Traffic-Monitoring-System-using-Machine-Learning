@@ -1,0 +1,28 @@
+KDD CUP 99 MODEL TESTING INFORMATION
+======================================================================
+
+Dataset: KDD Cup 99 - 10 percent subset
+Total records: 494021
+Input features: 41
+Classification: Binary
+0 = Normal
+1 = Attack
+
+Train/Test split: 80/20
+Random state: 42
+Split method: Stratified
+
+Training records: 395216
+Testing records: 98805
+
+Categorical features:
+- protocol_type
+- service
+- flag
+
+Preprocessing:
+- OneHotEncoder for categorical features
+- Unknown categories ignored during prediction
+- StandardScaler used for Logistic Regression numeric features
+- Numeric values passed directly for tree models
+- Preprocessing fitted using training data only

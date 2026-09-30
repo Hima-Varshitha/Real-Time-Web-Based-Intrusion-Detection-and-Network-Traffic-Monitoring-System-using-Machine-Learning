@@ -1,139 +1,568 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>IDS | Simulation Results</title>
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-      integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
-      crossorigin="anonymous"
-    />
-    <link rel="stylesheet" href="../static/results.css" />
-    <link rel="shortcut icon" href="../static/icon.jpg" type="image/x-icon" />
-  </head>
-  <body>
-    <nav class="navbar navbar-expand-lg bg-body-tertiary" data-bs-theme="dark">
-      <main>
-      <div class="container-fluid">
-        <a class="navbar-brand" href="/">
-          <img
-            src="../static/icon.jpg"
-            alt="Logo"
-            width="30"
-            height="30"
-            class="d-inline-block align-text-top rounded-circle"
-          />
-          IDS
-        </a>
-        <button
-          class="navbar-toggler"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#navbarNav"
-          aria-controls="navbarNav"
-          aria-expanded="false"
-          aria-label="Toggle navigation"
-        >
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-          <ul class="navbar-nav ms-auto">
-            <li class="nav-item">
-              <a class="nav-link" href="/">Attack Simulation</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="{{ url_for('pda') }}"
-                >Preliminary Data Analysis</a
-              >
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="{{ url_for('features') }}"
-                >Features Description</a
-              >
-            </li>
-          </ul>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Detection Results | IDS</title>
+
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+  />
+
+  <link
+    rel="shortcut icon"
+    href="{{ url_for('static', filename='icon.jpg') }}"
+    type="image/x-icon"
+  />
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: #f6f8fb;
+      color: #172033;
+      font-family: Inter, -apple-system, BlinkMacSystemFont,
+        "Segoe UI", sans-serif;
+    }
+
+    /* NAVBAR */
+
+    .topbar {
+      background: #0b1220;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .topbar .container-fluid {
+      min-height: 68px;
+      padding-left: 32px;
+      padding-right: 32px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      color: #fff !important;
+      text-decoration: none;
+      font-weight: 700;
+    }
+
+    .brand-logo {
+      width: 34px;
+      height: 34px;
+      border-radius: 9px;
+      object-fit: cover;
+    }
+
+    .brand-name {
+      font-size: 17px;
+    }
+
+    .brand-divider {
+      width: 1px;
+      height: 20px;
+      background: rgba(255, 255, 255, 0.16);
+      margin: 0 4px;
+    }
+
+    .brand-product {
+      color: #94a3b8;
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .topbar .nav-link {
+      color: #94a3b8 !important;
+      font-size: 14px;
+      font-weight: 500;
+      padding: 8px 12px !important;
+      border-radius: 7px;
+      margin-left: 4px;
+    }
+
+    .topbar .nav-link:hover {
+      color: #fff !important;
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    .topbar .nav-link.active {
+      color: #fff !important;
+      background: rgba(255, 255, 255, 0.09);
+    }
+
+    /* PAGE */
+
+    .page {
+      max-width: 1100px;
+      margin: auto;
+      padding: 42px 32px 60px;
+    }
+
+    .eyebrow {
+      margin: 0 0 7px;
+      color: #64748b;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .page-title {
+      margin: 0;
+      color: #0f172a;
+      font-size: 31px;
+      font-weight: 750;
+      letter-spacing: -0.8px;
+    }
+
+    .page-description {
+      margin: 9px 0 0;
+      color: #64748b;
+      font-size: 14px;
+    }
+
+    /* FINAL RESULT */
+
+    .final-card {
+      margin-top: 27px;
+      padding: 28px;
+      background: #0f172a;
+      border-radius: 15px;
+      color: #fff;
+    }
+
+    .final-label {
+      margin-bottom: 9px;
+      color: #94a3b8;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .final-result {
+      margin: 0;
+      font-size: 30px;
+      font-weight: 750;
+    }
+
+    .final-description {
+      margin: 8px 0 0;
+      color: #cbd5e1;
+      font-size: 13px;
+    }
+
+    /* MODEL SECTION */
+
+    .section-heading {
+      margin-top: 32px;
+      margin-bottom: 16px;
+    }
+
+    .section-heading h2 {
+      margin: 0;
+      color: #1e293b;
+      font-size: 17px;
+      font-weight: 700;
+    }
+
+    .section-heading p {
+      margin: 5px 0 0;
+      color: #94a3b8;
+      font-size: 12px;
+    }
+
+    .model-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    .model-card {
+      background: #fff;
+      border: 1px solid #e5eaf0;
+      border-radius: 13px;
+      padding: 22px;
+      box-shadow: 0 2px 5px rgba(15, 23, 42, 0.025);
+    }
+
+    .model-number {
+      width: 31px;
+      height: 31px;
+      display: grid;
+      place-items: center;
+      margin-bottom: 16px;
+      background: #eff6ff;
+      color: #2563eb;
+      border-radius: 8px;
+      font-size: 11px;
+      font-weight: 750;
+    }
+
+    .model-name {
+      margin: 0;
+      color: #1e293b;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .prediction-label {
+      margin: 15px 0 5px;
+      color: #94a3b8;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .prediction-value {
+      margin: 0;
+      color: #334155;
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    /* PROCESS */
+
+    .decision-info {
+      margin-top: 20px;
+      padding: 17px 19px;
+      background: #fff;
+      border: 1px solid #e5eaf0;
+      border-radius: 11px;
+      color: #64748b;
+      font-size: 12px;
+      line-height: 1.6;
+    }
+
+    .decision-info strong {
+      color: #334155;
+    }
+
+    /* BUTTONS */
+
+    .actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 11px;
+      margin-top: 25px;
+    }
+
+    .action-secondary,
+    .action-primary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 43px;
+      padding: 0 18px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 650;
+    }
+
+    .action-secondary {
+      background: #fff;
+      color: #475569;
+      border: 1px solid #dbe2ea;
+    }
+
+    .action-primary {
+      background: #2563eb;
+      color: #fff;
+      border: 1px solid #2563eb;
+    }
+
+    .action-secondary:hover {
+      color: #334155;
+      background: #f8fafc;
+    }
+
+    .action-primary:hover {
+      color: #fff;
+      background: #1d4ed8;
+    }
+
+    /* FOOTER */
+
+    .footer {
+      padding-top: 32px;
+      color: #94a3b8;
+      font-size: 12px;
+      text-align: center;
+    }
+
+    @media (max-width: 800px) {
+      .model-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 650px) {
+      .page {
+        padding: 30px 18px 45px;
+      }
+
+      .topbar .container-fluid {
+        padding-left: 18px;
+        padding-right: 18px;
+      }
+
+      .brand-divider,
+      .brand-product {
+        display: none;
+      }
+
+      .actions {
+        flex-direction: column;
+      }
+
+      .action-secondary,
+      .action-primary {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- NAVBAR -->
+
+  <nav class="navbar navbar-expand-lg topbar" data-bs-theme="dark">
+    <div class="container-fluid">
+
+      <a class="brand" href="/">
+        <img
+          src="{{ url_for('static', filename='icon.jpg') }}"
+          class="brand-logo"
+          alt="IDS"
+        />
+
+        <span class="brand-name">IDS</span>
+        <span class="brand-divider"></span>
+        <span class="brand-product">Security Console</span>
+      </a>
+
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-bs-toggle="collapse"
+        data-bs-target="#mainNavigation"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div
+        class="collapse navbar-collapse"
+        id="mainNavigation"
+      >
+        <ul class="navbar-nav ms-auto">
+
+          <li class="nav-item">
+            <a class="nav-link" href="/">
+              Home
+            </a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link" href="/logs">
+              Detection Logs
+            </a>
+          </li>
+
+          <li class="nav-item">
+            <a
+              class="nav-link"
+              href="{{ url_for('prediction') }}"
+            >
+              Manual Prediction
+            </a>
+          </li>
+
+          <li class="nav-item">
+            <span class="nav-link active">
+              Results
+            </span>
+          </li>
+
+        </ul>
+      </div>
+
+    </div>
+  </nav>
+
+
+  <!-- PAGE -->
+
+  <main class="page">
+
+    <header>
+
+      <p class="eyebrow">
+        Prediction Complete
+      </p>
+
+      <h1 class="page-title">
+        Intrusion Detection Results
+      </h1>
+
+      <p class="page-description">
+        The submitted traffic record was analyzed by all three
+        machine-learning models.
+      </p>
+
+    </header>
+
+
+    <!-- FINAL DECISION -->
+
+    <section class="final-card">
+
+      <div class="final-label">
+        Final System Decision
+      </div>
+
+      <h2 class="final-result">
+        {{ final_prediction }}
+      </h2>
+
+      <p class="final-description">
+        Final classification determined using majority voting
+        across the three intrusion-detection models.
+      </p>
+
+    </section>
+
+
+    <!-- MODEL RESULTS -->
+
+    <div class="section-heading">
+
+      <h2>Individual Model Predictions</h2>
+
+      <p>
+        Classification returned by each trained machine-learning model.
+      </p>
+
+    </div>
+
+
+    <section class="model-grid">
+
+      <article class="model-card">
+
+        <div class="model-number">
+          01
         </div>
-      </div>
-    </nav>
-    <div class="container custom-border">
 
-      <div class="text-center mb-4 mt-4">
-        <h2>
-            🛡️ Intrusion Detection Results
-        </h2>
-        <p class="text-muted">
-            Machine Learning Models Analyzed the Network Traffic
-        </p>
-      </div>
-
-
-      <div class="card p-3 mb-3">
-
-        <h4>Decision Tree</h4>
-
-          <p>
-          Prediction:
-          <strong>{{dt_prediction}}</strong>
-          </p>
-
-      </div>
-
-
-
-      <div class="card p-3 mb-3">
-
-        <h4>Logistic Regression</h4>
-
-        <p>
-          Prediction:
-          <strong>{{lr_prediction}}</strong>
-        </p>
-
-      </div>
-
-
-
-      <div class="card p-3 mb-3">
-
-        <h4>Random Forest</h4>
-
-        <p>
-          Prediction:
-          <strong>{{rf_prediction}}</strong>
-        </p>
-
-      </div>
-
-
-
-      <div class="card p-3 mb-3">
-
-        <h3>
-          Final System Decision
+        <h3 class="model-name">
+          Decision Tree
         </h3>
 
-        <h4>
-          {{final_prediction}}
-        </h4>
+        <p class="prediction-label">
+          Prediction
+        </p>
 
-      </div>
+        <p class="prediction-value">
+          {{ dt_prediction }}
+        </p>
+
+      </article>
+
+
+      <article class="model-card">
+
+        <div class="model-number">
+          02
+        </div>
+
+        <h3 class="model-name">
+          Logistic Regression
+        </h3>
+
+        <p class="prediction-label">
+          Prediction
+        </p>
+
+        <p class="prediction-value">
+          {{ lr_prediction }}
+        </p>
+
+      </article>
+
+
+      <article class="model-card">
+
+        <div class="model-number">
+          03
+        </div>
+
+        <h3 class="model-name">
+          Random Forest
+        </h3>
+
+        <p class="prediction-label">
+          Prediction
+        </p>
+
+        <p class="prediction-value">
+          {{ rf_prediction }}
+        </p>
+
+      </article>
+
+    </section>
+
+
+    <div class="decision-info">
+
+      <strong>Decision method:</strong>
+      Each model independently classifies the submitted traffic
+      as Normal or Attack. The final system decision is selected
+      when at least two of the three models agree.
+
     </div>
-  </div>
-</main>
-    <footer class="footer text-center mt-5">
-      <h6 class="footer__title">
-          © 2026 Real-Time Intrusion Detection System
-      </h6>
-      <p style="font-size:14px;">
-          Final Year Project | Cybersecurity & Machine Learning
-      </p>
+
+
+    <!-- ACTIONS -->
+
+    <div class="actions">
+
+      <a
+        href="/logs"
+        class="action-secondary"
+      >
+        View Detection Logs
+      </a>
+
+      <a
+        href="{{ url_for('prediction') }}"
+        class="action-primary"
+      >
+        Analyze Another Record
+      </a>
+
+    </div>
+
+
+    <footer class="footer">
+      © 2026 Real-Time Intrusion Detection System
+      &nbsp;•&nbsp;
+      Cybersecurity & Machine Learning
     </footer>
-    <script
-      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
-      integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
-      crossorigin="anonymous"
-    ></script>
-  </body>
+
+  </main>
+
+
+  <script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js">
+  </script>
+
+</body>
 </html>

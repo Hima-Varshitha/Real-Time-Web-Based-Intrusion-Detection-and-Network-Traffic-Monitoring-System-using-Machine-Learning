@@ -1,0 +1,26 @@
+Model: Random Forest
+======================================================================
+
+Accuracy : 0.999787 (99.9787%)
+Precision: 0.999912 (99.9912%)
+Recall   : 0.999824 (99.9824%)
+F1-score : 0.999868 (99.9868%)
+
+Confusion Matrix:
+[[19449     7]
+ [   14 79335]]
+
+TN: 19449
+FP: 7
+FN: 14
+TP: 79335
+
+Classification Report:
+              precision    recall  f1-score   support
+
+      Normal     0.9993    0.9996    0.9995     19456
+      Attack     0.9999    0.9998    0.9999     79349
+
+    accuracy                         0.9998     98805
+   macro avg     0.9996    0.9997    0.9997     98805
+weighted avg     0.9998    0.9998    0.9998     98805

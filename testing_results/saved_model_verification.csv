@@ -1,0 +1,11 @@
+Dataset_Index,Original_KDD_Label,Expected_Binary,Decision Tree,Logistic Regression,Random Forest
+84570,normal.,Normal,Normal,Normal,Normal
+24040,normal.,Normal,Normal,Normal,Normal
+456851,normal.,Normal,Normal,Normal,Normal
+23352,normal.,Normal,Normal,Normal,Normal
+35485,normal.,Normal,Normal,Normal,Normal
+122150,neptune.,Attack,Attack,Attack,Attack
+111305,neptune.,Attack,Attack,Attack,Attack
+169785,smurf.,Attack,Attack,Attack,Attack
+355882,neptune.,Attack,Attack,Attack,Attack
+157219,smurf.,Attack,Attack,Attack,Attack

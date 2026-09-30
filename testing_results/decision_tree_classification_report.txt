@@ -1,0 +1,26 @@
+Model: Decision Tree
+======================================================================
+
+Accuracy : 0.999767 (99.9767%)
+Precision: 0.999861 (99.9861%)
+Recall   : 0.999849 (99.9849%)
+F1-score : 0.999855 (99.9855%)
+
+Confusion Matrix:
+[[19445    11]
+ [   12 79337]]
+
+TN: 19445
+FP: 11
+FN: 12
+TP: 79337
+
+Classification Report:
+              precision    recall  f1-score   support
+
+      Normal     0.9994    0.9994    0.9994     19456
+      Attack     0.9999    0.9998    0.9999     79349
+
+    accuracy                         0.9998     98805
+   macro avg     0.9996    0.9996    0.9996     98805
+weighted avg     0.9998    0.9998    0.9998     98805

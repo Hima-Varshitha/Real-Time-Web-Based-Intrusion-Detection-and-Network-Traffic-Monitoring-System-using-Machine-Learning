@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Model Performance | IDS</title>
+
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+  />
+
+  <link
+    rel="shortcut icon"
+    href="{{ url_for('static', filename='icon.jpg') }}"
+    type="image/x-icon"
+  />
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: #f6f8fb;
+      color: #172033;
+      font-family: Inter, -apple-system, BlinkMacSystemFont,
+        "Segoe UI", sans-serif;
+    }
+
+    /* =========================
+       NAVIGATION
+    ========================= */
+
+    .topbar {
+      background: #0b1220;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .topbar .container-fluid {
+      min-height: 68px;
+      padding-left: 32px;
+      padding-right: 32px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      color: #ffffff !important;
+      text-decoration: none;
+      font-weight: 700;
+    }
+
+    .brand-logo {
+      width: 34px;
+      height: 34px;
+      border-radius: 9px;
+      object-fit: cover;
+    }
+
+    .brand-name {
+      font-size: 17px;
+    }
+
+    .brand-divider {
+      width: 1px;
+      height: 20px;
+      background: rgba(255, 255, 255, 0.16);
+      margin: 0 4px;
+    }
+
+    .brand-product {
+      color: #94a3b8;
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .topbar .nav-link {
+      color: #94a3b8 !important;
+      font-size: 14px;
+      font-weight: 500;
+      padding: 8px 12px !important;
+      border-radius: 7px;
+      margin-left: 4px;
+    }
+
+    .topbar .nav-link:hover {
+      color: #ffffff !important;
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    .topbar .nav-link.active {
+      color: #ffffff !important;
+      background: rgba(255, 255, 255, 0.09);
+    }
+
+    /* =========================
+       PAGE
+    ========================= */
+
+    .page {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 42px 32px 60px;
+    }
+
+    .eyebrow {
+      margin: 0 0 7px;
+      color: #64748b;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .page-title {
+      margin: 0;
+      color: #0f172a;
+      font-size: 31px;
+      font-weight: 750;
+      letter-spacing: -0.8px;
+    }
+
+    .page-description {
+      max-width: 760px;
+      margin: 9px 0 0;
+      color: #64748b;
+      font-size: 14px;
+      line-height: 1.65;
+    }
+
+    /* =========================
+       DATASET CARDS
+    ========================= */
+
+    .dataset-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 15px;
+      margin-top: 27px;
+    }
+
+    .summary-card {
+      background: #ffffff;
+      border: 1px solid #e5eaf0;
+      border-radius: 13px;
+      padding: 20px;
+    }
+
+    .summary-label {
+      margin: 0 0 10px;
+      color: #64748b;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .summary-value {
+      margin: 0;
+      color: #0f172a;
+      font-size: 24px;
+      font-weight: 750;
+    }
+
+    .summary-detail {
+      margin: 6px 0 0;
+      color: #94a3b8;
+      font-size: 10px;
+    }
+
+    /* =========================
+       SECTION
+    ========================= */
+
+    .section-heading {
+      margin-top: 34px;
+      margin-bottom: 16px;
+    }
+
+    .section-heading h2 {
+      margin: 0;
+      color: #1e293b;
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .section-heading p {
+      margin: 5px 0 0;
+      color: #94a3b8;
+      font-size: 12px;
+    }
+
+    /* =========================
+       MODEL CARDS
+    ========================= */
+
+    .model-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    .model-card {
+      background: #ffffff;
+      border: 1px solid #e5eaf0;
+      border-radius: 14px;
+      padding: 22px;
+    }
+
+    .model-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .model-name {
+      margin: 0;
+      color: #1e293b;
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .model-badge {
+      padding: 5px 8px;
+      background: #eff6ff;
+      color: #2563eb;
+      border-radius: 6px;
+      font-size: 9px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .accuracy-block {
+      padding-bottom: 18px;
+      margin-bottom: 17px;
+      border-bottom: 1px solid #edf0f4;
+    }
+
+    .accuracy-label {
+      color: #94a3b8;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .accuracy-value {
+      margin-top: 5px;
+      color: #0f172a;
+      font-size: 28px;
+      font-weight: 750;
+    }
+
+    .metric-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px solid #f1f3f6;
+      font-size: 12px;
+    }
+
+    .metric-row:last-child {
+      border-bottom: none;
+    }
+
+    .metric-name {
+      color: #64748b;
+    }
+
+    .metric-value {
+      color: #334155;
+      font-weight: 650;
+    }
+
+    /* =========================
+       CONFUSION MATRICES
+    ========================= */
+
+    .matrix-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    .matrix-card {
+      background: #ffffff;
+      border: 1px solid #e5eaf0;
+      border-radius: 14px;
+      padding: 22px;
+    }
+
+    .matrix-card h3 {
+      margin: 0 0 17px;
+      color: #334155;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .matrix-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 5px;
+      text-align: center;
+    }
+
+    .matrix-table th {
+      padding: 6px;
+      color: #94a3b8;
+      font-size: 9px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .matrix-label {
+      color: #64748b !important;
+      font-size: 9px !important;
+    }
+
+    .matrix-cell {
+      padding: 15px 6px;
+      background: #f8fafc;
+      border: 1px solid #edf0f4;
+      border-radius: 7px;
+      color: #334155;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .matrix-correct {
+      background: #f0fdf4;
+      border-color: #dcfce7;
+      color: #15803d;
+    }
+
+    .matrix-error {
+      background: #fff7f7;
+      border-color: #fee2e2;
+      color: #b91c1c;
+    }
+
+    /* =========================
+       TEST INFORMATION
+    ========================= */
+
+    .test-info {
+      margin-top: 18px;
+      padding: 18px 20px;
+      background: #eff6ff;
+      border: 1px solid #dbeafe;
+      border-radius: 11px;
+      color: #475569;
+      font-size: 12px;
+      line-height: 1.7;
+    }
+
+    .test-info strong {
+      color: #1e3a8a;
+    }
+
+    /* =========================
+       FOOTER
+    ========================= */
+
+    .footer {
+      padding-top: 32px;
+      color: #94a3b8;
+      font-size: 12px;
+      text-align: center;
+    }
+
+    @media (max-width: 900px) {
+      .dataset-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .model-grid,
+      .matrix-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .page {
+        padding: 30px 18px 45px;
+      }
+
+      .topbar .container-fluid {
+        padding-left: 18px;
+        padding-right: 18px;
+      }
+
+      .dataset-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .brand-divider,
+      .brand-product {
+        display: none;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- NAVBAR -->
+
+  <nav class="navbar navbar-expand-lg topbar" data-bs-theme="dark">
+    <div class="container-fluid">
+
+      <a class="brand" href="/">
+        <img
+          src="{{ url_for('static', filename='icon.jpg') }}"
+          class="brand-logo"
+          alt="IDS"
+        />
+
+        <span class="brand-name">IDS</span>
+        <span class="brand-divider"></span>
+        <span class="brand-product">Security Console</span>
+      </a>
+
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-bs-toggle="collapse"
+        data-bs-target="#mainNavigation"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div
+        class="collapse navbar-collapse"
+        id="mainNavigation"
+      >
+        <ul class="navbar-nav ms-auto">
+
+          <li class="nav-item">
+            <a class="nav-link" href="/">
+              Home
+            </a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link" href="/logs">
+              Detection Logs
+            </a>
+          </li>
+
+          <li class="nav-item">
+            <a
+              class="nav-link"
+              href="{{ url_for('prediction') }}"
+            >
+              Manual Prediction
+            </a>
+          </li>
+
+          <li class="nav-item">
+            <a
+              class="nav-link active"
+              href="/model-performance"
+            >
+              Model Performance
+            </a>
+          </li>
+
+        </ul>
+      </div>
+
+    </div>
+  </nav>
+
+
+  <main class="page">
+
+    <!-- HEADER -->
+
+    <header>
+
+      <p class="eyebrow">
+        Model Evaluation
+      </p>
+
+      <h1 class="page-title">
+        Model Performance
+      </h1>
+
+      <p class="page-description">
+        Evaluation results for the three intrusion-detection models
+        using the held-out 20% test portion of the KDD Cup 99
+        10% dataset.
+      </p>
+
+    </header>
+
+
+    <!-- DATASET SUMMARY -->
+
+    <section class="dataset-grid">
+
+      <article class="summary-card">
+
+        <p class="summary-label">
+          Dataset Records
+        </p>
+
+        <p class="summary-value">
+          {{ "{:,}".format(total_records) }}
+        </p>
+
+        <p class="summary-detail">
+          KDD Cup 99 10% dataset
+        </p>
+
+      </article>
+
+
+      <article class="summary-card">
+
+        <p class="summary-label">
+          Input Features
+        </p>
+
+        <p class="summary-value">
+          {{ total_features }}
+        </p>
+
+        <p class="summary-detail">
+          Complete KDD feature schema
+        </p>
+
+      </article>
+
+
+      <article class="summary-card">
+
+        <p class="summary-label">
+          Training Records
+        </p>
+
+        <p class="summary-value">
+          {{ "{:,}".format(training_records) }}
+        </p>
+
+        <p class="summary-detail">
+          80% training portion
+        </p>
+
+      </article>
+
+
+      <article class="summary-card">
+
+        <p class="summary-label">
+          Test Records
+        </p>
+
+        <p class="summary-value">
+          {{ "{:,}".format(testing_records) }}
+        </p>
+
+        <p class="summary-detail">
+          Held-out 20% test portion
+        </p>
+
+      </article>
+
+    </section>
+
+
+    <!-- MODEL METRICS -->
+
+    <div class="section-heading">
+
+      <h2>Classification Metrics</h2>
+
+      <p>
+        Accuracy, precision, recall and F1-score measured
+        on 98,805 held-out test records.
+      </p>
+
+    </div>
+
+
+    <section class="model-grid">
+
+      {% for model in models %}
+
+      <article class="model-card">
+
+        <div class="model-header">
+
+          <h3 class="model-name">
+            {{ model.name }}
+          </h3>
+
+          <span class="model-badge">
+            Test Set
+          </span>
+
+        </div>
+
+
+        <div class="accuracy-block">
+
+          <div class="accuracy-label">
+            Accuracy
+          </div>
+
+          <div class="accuracy-value">
+            {{ "%.4f"|format(model.accuracy) }}%
+          </div>
+
+        </div>
+
+
+        <div class="metric-row">
+          <span class="metric-name">Precision</span>
+          <span class="metric-value">
+            {{ "%.4f"|format(model.precision) }}%
+          </span>
+        </div>
+
+
+        <div class="metric-row">
+          <span class="metric-name">Recall</span>
+          <span class="metric-value">
+            {{ "%.4f"|format(model.recall) }}%
+          </span>
+        </div>
+
+
+        <div class="metric-row">
+          <span class="metric-name">F1-Score</span>
+          <span class="metric-value">
+            {{ "%.4f"|format(model.f1) }}%
+          </span>
+        </div>
+
+      </article>
+
+      {% endfor %}
+
+    </section>
+
+
+    <!-- CONFUSION MATRICES -->
+
+    <div class="section-heading">
+
+      <h2>Confusion Matrices</h2>
+
+      <p>
+        Normal and Attack classification outcomes from
+        the held-out test dataset.
+      </p>
+
+    </div>
+
+
+    <section class="matrix-grid">
+
+      {% for model in models %}
+
+      <article class="matrix-card">
+
+        <h3>
+          {{ model.name }}
+        </h3>
+
+        <table class="matrix-table">
+
+          <tr>
+            <th></th>
+            <th>Predicted Normal</th>
+            <th>Predicted Attack</th>
+          </tr>
+
+          <tr>
+            <th class="matrix-label">
+              Actual Normal
+            </th>
+
+            <td class="matrix-cell matrix-correct">
+              {{ "{:,}".format(model.tn) }}
+            </td>
+
+            <td class="matrix-cell matrix-error">
+              {{ "{:,}".format(model.fp) }}
+            </td>
+          </tr>
+
+          <tr>
+            <th class="matrix-label">
+              Actual Attack
+            </th>
+
+            <td class="matrix-cell matrix-error">
+              {{ "{:,}".format(model.fn) }}
+            </td>
+
+            <td class="matrix-cell matrix-correct">
+              {{ "{:,}".format(model.tp) }}
+            </td>
+          </tr>
+
+        </table>
+
+      </article>
+
+      {% endfor %}
+
+    </section>
+
+
+    <!-- INFORMATION -->
+
+    <div class="test-info">
+
+      <strong>Evaluation method:</strong>
+      The KDD Cup 99 10% dataset was divided using an
+      80/20 stratified train-test split. The metrics shown
+      above were calculated on the held-out test portion.
+      Normal traffic is represented as one binary class,
+      while the original KDD attack categories are mapped
+      to the Attack class.
+
+    </div>
+
+
+    <footer class="footer">
+
+      © 2026 Real-Time Intrusion Detection System
+      &nbsp;•&nbsp;
+      Cybersecurity & Machine Learning
+
+    </footer>
+
+  </main>
+
+
+  <script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js">
+  </script>
+
+</body>
+</html>

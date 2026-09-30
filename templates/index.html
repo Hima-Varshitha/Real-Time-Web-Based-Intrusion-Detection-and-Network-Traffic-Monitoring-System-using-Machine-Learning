@@ -1,298 +1,1004 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>IDS</title>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>IDS Security Console</title>
+
+    <!-- Bootstrap -->
     <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-      integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
-      crossorigin="anonymous"
-    />
-    <link rel="stylesheet" href="../static/styles.css" />
-    <link rel="shortcut icon" href="../static/icon.jpg" type="image/x-icon" />
-  </head>
-  <body>
-    <nav class="navbar navbar-expand-lg bg-body-tertiary" data-bs-theme="dark">
-      <div class="container-fluid">
-        <a class="navbar-brand" href="/">
-          <img
-            src="../static/icon.jpg"
-            alt="Logo"
-            width="30"
-            height="30"
-            class="d-inline-block align-text-top rounded-circle"
-          />
-          IDS
-        </a>
-        <button
-          class="navbar-toggler"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#navbarNav"
-          aria-controls="navbarNav"
-          aria-expanded="false"
-          aria-label="Toggle navigation"
-        >
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-          <ul class="navbar-nav ms-auto">
-            <li class="nav-item">
-              <a class="nav-link" href="/"> Home </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="{{ url_for('pda') }}">Preliminary Data Analysis</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="{{ url_for('features') }}">Features Description</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="/analytics">Analytics</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="/logs">Attack Logs</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="{{ url_for('prediction') }}"> Manual Prediction </a>
-            </li>
-          </ul>
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+
+    <!-- Bootstrap Icons -->
+    <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+    >
+
+    <link
+        rel="shortcut icon"
+        href="{{ url_for('static', filename='icon.jpg') }}"
+        type="image/x-icon"
+    >
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            background: #f6f8fb;
+            color: #172033;
+            font-family:
+                Inter,
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                sans-serif;
+        }
+
+
+        /* ==========================================
+           NAVIGATION
+        ========================================== */
+
+        .topbar {
+            background: #0b1220;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+        }
+
+        .topbar .container-fluid {
+            min-height: 68px;
+            padding-left: 32px;
+            padding-right: 32px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+            color: #ffffff !important;
+            text-decoration: none;
+            font-weight: 700;
+        }
+
+        .brand-logo {
+            width: 34px;
+            height: 34px;
+            border-radius: 9px;
+            object-fit: cover;
+        }
+
+        .brand-name {
+            font-size: 17px;
+        }
+
+        .brand-divider {
+            width: 1px;
+            height: 20px;
+            background: rgba(255,255,255,0.16);
+            margin: 0 4px;
+        }
+
+        .brand-product {
+            color: #94a3b8;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .topbar .nav-link {
+            color: #94a3b8 !important;
+            font-size: 14px;
+            font-weight: 500;
+            padding: 8px 12px !important;
+            border-radius: 7px;
+            margin-left: 4px;
+        }
+
+        .topbar .nav-link:hover {
+            color: #ffffff !important;
+            background: rgba(255,255,255,0.06);
+        }
+
+        .topbar .nav-link.active {
+            color: #ffffff !important;
+            background: rgba(255,255,255,0.09);
+        }
+
+
+        /* ==========================================
+           MAIN PAGE
+        ========================================== */
+
+        .page-container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 56px 32px 50px;
+        }
+
+
+        /* ==========================================
+           HERO
+        ========================================== */
+
+        .hero {
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr;
+            gap: 60px;
+            align-items: center;
+            padding: 32px 0 62px;
+        }
+
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 18px;
+            color: #2563eb;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .eyebrow-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #2563eb;
+        }
+
+        .hero-title {
+            max-width: 720px;
+            margin: 0;
+            color: #0f172a;
+            font-size: 48px;
+            line-height: 1.08;
+            font-weight: 760;
+            letter-spacing: -1.8px;
+        }
+
+        .hero-description {
+            max-width: 690px;
+            margin: 22px 0 0;
+            color: #64748b;
+            font-size: 16px;
+            line-height: 1.75;
+        }
+
+        .hero-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 30px;
+        }
+
+        .primary-button,
+        .secondary-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            min-height: 44px;
+            padding: 0 18px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 650;
+            transition: 0.15s ease;
+        }
+
+        .primary-button {
+            background: #2563eb;
+            border: 1px solid #2563eb;
+            color: #ffffff;
+        }
+
+        .primary-button:hover {
+            background: #1d4ed8;
+            color: #ffffff;
+        }
+
+        .secondary-button {
+            background: #ffffff;
+            border: 1px solid #dbe2ea;
+            color: #334155;
+        }
+
+        .secondary-button:hover {
+            background: #f8fafc;
+            color: #0f172a;
+        }
+
+
+        /* ==========================================
+           SECURITY PANEL
+        ========================================== */
+
+        .security-panel {
+            background: #0f172a;
+            border: 1px solid #1e293b;
+            border-radius: 18px;
+            padding: 24px;
+            box-shadow: 0 18px 45px rgba(15,23,42,0.13);
+        }
+
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .panel-title {
+            color: #f8fafc;
+            font-size: 14px;
+            font-weight: 650;
+        }
+
+        .system-live {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            color: #86efac;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .live-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #22c55e;
+            box-shadow: 0 0 0 4px rgba(34,197,94,0.12);
+        }
+
+        .pipeline-step {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 13px 0;
+            border-bottom: 1px solid rgba(148,163,184,0.13);
+        }
+
+        .pipeline-step:last-child {
+            border-bottom: none;
+        }
+
+        .pipeline-icon {
+            width: 36px;
+            height: 36px;
+            display: grid;
+            place-items: center;
+            flex: 0 0 36px;
+            border-radius: 9px;
+            background: rgba(59,130,246,0.11);
+            color: #93c5fd;
+        }
+
+        .pipeline-content {
+            flex: 1;
+        }
+
+        .pipeline-name {
+            margin: 0;
+            color: #e2e8f0;
+            font-size: 12px;
+            font-weight: 650;
+        }
+
+        .pipeline-description {
+            margin: 3px 0 0;
+            color: #64748b;
+            font-size: 11px;
+        }
+
+        .pipeline-state {
+            color: #86efac;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+
+        /* ==========================================
+           SECTION
+        ========================================== */
+
+        .section-header {
+            margin-bottom: 22px;
+        }
+
+        .section-label {
+            margin: 0 0 7px;
+            color: #64748b;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .section-title {
+            margin: 0;
+            color: #0f172a;
+            font-size: 25px;
+            font-weight: 750;
+            letter-spacing: -0.6px;
+        }
+
+        .section-description {
+            max-width: 680px;
+            margin: 8px 0 0;
+            color: #64748b;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+
+        /* ==========================================
+           FEATURE CARDS
+        ========================================== */
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 62px;
+        }
+
+        .feature-card {
+            background: #ffffff;
+            border: 1px solid #e5eaf0;
+            border-radius: 14px;
+            padding: 22px;
+            box-shadow: 0 2px 5px rgba(15,23,42,0.025);
+        }
+
+        .feature-icon {
+            width: 40px;
+            height: 40px;
+            display: grid;
+            place-items: center;
+            margin-bottom: 18px;
+            border-radius: 10px;
+            background: #eff6ff;
+            color: #2563eb;
+            font-size: 18px;
+        }
+
+        .feature-card h3 {
+            margin: 0 0 9px;
+            color: #1e293b;
+            font-size: 15px;
+            font-weight: 700;
+        }
+
+        .feature-card p {
+            margin: 0;
+            color: #64748b;
+            font-size: 12px;
+            line-height: 1.65;
+        }
+
+
+        /* ==========================================
+           ARCHITECTURE
+        ========================================== */
+
+        .architecture {
+            background: #ffffff;
+            border: 1px solid #e5eaf0;
+            border-radius: 16px;
+            padding: 30px;
+        }
+
+        .architecture-flow {
+            display: grid;
+            grid-template-columns:
+                1fr 45px
+                1fr 45px
+                1fr 45px
+                1fr;
+            align-items: center;
+            margin-top: 25px;
+        }
+
+        .architecture-item {
+            min-height: 135px;
+            padding: 20px;
+            border: 1px solid #e8ecf1;
+            border-radius: 12px;
+            background: #fafbfd;
+        }
+
+        .architecture-number {
+            color: #94a3b8;
+            font-size: 10px;
+            font-weight: 700;
+        }
+
+        .architecture-item h4 {
+            margin: 10px 0 7px;
+            color: #1e293b;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .architecture-item p {
+            margin: 0;
+            color: #64748b;
+            font-size: 11px;
+            line-height: 1.55;
+        }
+
+        .flow-arrow {
+            text-align: center;
+            color: #94a3b8;
+            font-size: 17px;
+        }
+
+
+        /* ==========================================
+           FOOTER
+        ========================================== */
+
+        .footer {
+            padding: 38px 0 12px;
+            color: #94a3b8;
+            font-size: 12px;
+            text-align: center;
+        }
+
+
+        /* ==========================================
+           RESPONSIVE
+        ========================================== */
+
+        @media (max-width: 1050px) {
+
+            .hero {
+                grid-template-columns: 1fr;
+            }
+
+            .security-panel {
+                max-width: 650px;
+            }
+
+            .feature-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .architecture-flow {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+
+            .flow-arrow {
+                transform: rotate(90deg);
+            }
+
+        }
+
+        @media (max-width: 768px) {
+
+            .topbar .container-fluid {
+                padding-left: 18px;
+                padding-right: 18px;
+            }
+
+            .page-container {
+                padding: 35px 18px;
+            }
+
+            .hero {
+                padding-top: 15px;
+                gap: 35px;
+            }
+
+            .hero-title {
+                font-size: 36px;
+            }
+
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .brand-divider,
+            .brand-product {
+                display: none;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+    <!-- ==========================================
+         NAVIGATION
+    ========================================== -->
+
+    <nav class="navbar navbar-expand-lg topbar" data-bs-theme="dark">
+
+        <div class="container-fluid">
+
+            <a class="brand" href="/">
+
+                <img
+                    src="{{ url_for('static', filename='icon.jpg') }}"
+                    class="brand-logo"
+                    alt="IDS"
+                >
+
+                <span class="brand-name">IDS</span>
+
+                <span class="brand-divider"></span>
+
+                <span class="brand-product">
+                    Security Console
+                </span>
+
+            </a>
+
+
+            <button
+                class="navbar-toggler"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#mainNavigation"
+            >
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+
+            <div
+                class="collapse navbar-collapse"
+                id="mainNavigation"
+            >
+
+                <ul class="navbar-nav ms-auto">
+
+                    <li class="nav-item">
+                        <a
+                            class="nav-link active"
+                            href="/"
+                        >
+                            Home
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a
+                            class="nav-link"
+                            href="/logs"
+                        >
+                            Detection Logs
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a
+                            class="nav-link"
+                            href="/prediction"
+                        >
+                            Manual Prediction
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="/model-performance">
+                            Model Performance
+                        </a>
+                    </li>
+
+                </ul>
+
+            </div>
+
         </div>
-      </div>
+
     </nav>
 
-    <!-- ================= HERO SECTION ================= -->
 
-    <div class="text-center mb-5">
+    <main class="page-container">
 
-        <h1 class="display-5 fw-bold">
-            🛡️ Real-Time Intrusion Detection System
-        </h1>
+        <!-- ======================================
+             HERO
+        ======================================= -->
 
-        <h5 class="text-secondary">
-            Machine Learning Based Network Security Monitoring
-        </h5>
+        <section class="hero">
 
-        <p class="mt-4">
-            This system continuously monitors simulated network traffic,
-            detects malicious activities using Machine Learning models,
-            and provides live security monitoring through a real-time dashboard.
-        </p>
+            <div>
 
-    </div>
-
-<!-- ================= END HERO ================= -->
-
-<!-- ================= SYSTEM STATUS ================= -->
-
-    <div class="container mb-5">
-
-        <h3 class="text-center mb-4">
-            System Status
-        </h3>
-
-        <div class="row text-center">
-
-            <div class="col-md-3 mb-3">
-                <div class="card shadow-sm p-3">
-                    <h4>🟢</h4>
-                    <h5>Traffic Generator</h5>
-                    <p class="text-success fw-bold">
-                        ONLINE
-                    </p>
+                <div class="eyebrow">
+                    <span class="eyebrow-dot"></span>
+                    Machine Learning Security Platform
                 </div>
+
+                <h1 class="hero-title">
+                    Real-Time Intrusion Detection System
+                </h1>
+
+                <p class="hero-description">
+                    A machine-learning based network traffic
+                    classification system that identifies normal
+                    and malicious activity using Decision Tree,
+                    Logistic Regression and Random Forest models.
+                    Real-time monitoring is demonstrated through
+                    labelled KDD Cup 99 network traffic replay.
+                </p>
+
+
+                <div class="hero-actions">
+
+                    <a
+                        href="/prediction"
+                        class="primary-button"
+                    >
+                        <i class="bi bi-shield-check"></i>
+                        Manual Prediction
+                    </a>
+
+                    <a
+                        href="/logs"
+                        class="secondary-button"
+                    >
+                        <i class="bi bi-list-ul"></i>
+                        View Detection Logs
+                    </a>
+
+                </div>
+
             </div>
 
 
-            <div class="col-md-3 mb-3">
-                <div class="card shadow-sm p-3">
-                    <h4>🟢</h4>
-                    <h5>ML Detection Engine</h5>
-                    <p class="text-success fw-bold">
-                        ACTIVE
-                    </p>
+            <!-- Security Engine Panel -->
+
+            <div class="security-panel">
+
+                <div class="panel-header">
+
+                    <span class="panel-title">
+                        Detection Pipeline
+                    </span>
+
+                    <span class="system-live">
+                        <span class="live-dot"></span>
+                        Ready
+                    </span>
+
                 </div>
-            </div>
 
 
-            <div class="col-md-3 mb-3">
-                <div class="card shadow-sm p-3">
-                    <h4>🟢</h4>
-                    <h5>Live Monitoring</h5>
-                    <p class="text-success fw-bold">
-                        RUNNING
-                    </p>
-                </div>
-            </div>
+                <div class="pipeline-step">
 
+                    <div class="pipeline-icon">
+                        <i class="bi bi-database"></i>
+                    </div>
 
-            <div class="col-md-3 mb-3">
-                <div class="card shadow-sm p-3">
-                    <h4>🟢</h4>
-                    <h5>Logging System</h5>
-                    <p class="text-success fw-bold">
-                        ENABLED
-                    </p>
-                </div>
-            </div>
+                    <div class="pipeline-content">
+                        <p class="pipeline-name">
+                            KDD Cup 99 Traffic
+                        </p>
 
-        </div>
-
-    </div>
-
-<!-- ================= END STATUS ================= -->
-
-    <!-- ================= SYSTEM HIGHLIGHTS ================= -->
-
-    <div class="container mb-5">
-
-        <h2 class="text-center mb-4">
-            System Highlights
-        </h2>
-
-        <div class="row">
-
-            <div class="col-md-4 mb-3">
-                <div class="card shadow h-100">
-                    <div class="card-body text-center">
-                        <h2>🤖</h2>
-                        <h4>Machine Learning</h4>
-
-                        <p>
-                            Detects malicious network traffic using
-                            Decision Tree,
-                            Logistic Regression and
-                            Random Forest algorithms.
+                        <p class="pipeline-description">
+                            Labelled network connection records
                         </p>
                     </div>
+
+                    <span class="pipeline-state">
+                        Source
+                    </span>
+
                 </div>
-            </div>
 
-            <div class="col-md-4 mb-3">
-                <div class="card shadow h-100">
-                    <div class="card-body text-center">
-                        <h2>📡</h2>
-                        <h4>Live Monitoring</h4>
 
-                        <p>
-                            Continuously monitors simulated
-                            network traffic and processes
-                            incoming packets in real time.
+                <div class="pipeline-step">
+
+                    <div class="pipeline-icon">
+                        <i class="bi bi-cpu"></i>
+                    </div>
+
+                    <div class="pipeline-content">
+                        <p class="pipeline-name">
+                            ML Detection Engine
+                        </p>
+
+                        <p class="pipeline-description">
+                            Three trained classification pipelines
                         </p>
                     </div>
+
+                    <span class="pipeline-state">
+                        Ready
+                    </span>
+
                 </div>
-            </div>
 
-            <div class="col-md-4 mb-3">
-                <div class="card shadow h-100">
-                    <div class="card-body text-center">
-                        <h2>📊</h2>
-                        <h4>Security Logs</h4>
 
-                        <p>
-                            Stores all detections with
-                            timestamps and displays
-                            them through a live dashboard.
+                <div class="pipeline-step">
+
+                    <div class="pipeline-icon">
+                        <i class="bi bi-diagram-3"></i>
+                    </div>
+
+                    <div class="pipeline-content">
+                        <p class="pipeline-name">
+                            Majority Decision
+                        </p>
+
+                        <p class="pipeline-description">
+                            Combines predictions from all models
                         </p>
                     </div>
+
+                    <span class="pipeline-state">
+                        Active
+                    </span>
+
                 </div>
+
+
+                <div class="pipeline-step">
+
+                    <div class="pipeline-icon">
+                        <i class="bi bi-journal-text"></i>
+                    </div>
+
+                    <div class="pipeline-content">
+                        <p class="pipeline-name">
+                            Detection Logging
+                        </p>
+
+                        <p class="pipeline-description">
+                            Stores classifications and traffic labels
+                        </p>
+                    </div>
+
+                    <span class="pipeline-state">
+                        Enabled
+                    </span>
+
+                </div>
+
             </div>
-        </div>
-    </div>
 
-<!-- ================= END HIGHLIGHTS ================= -->
+        </section>
 
 
-    <footer class="footer text-center mt-5">
-    <h6 class="footer__title">
-        © 2026 Real-Time Intrusion Detection System
-    </h6>
-    <p style="font-size:14px;">
-        Final Year Project | Cybersecurity & Machine Learning
-    </p>
-    </footer>
-    <script>
-      // Event listener for the attackType dropdown
-      document
-        .getElementById("attackType")
-        .addEventListener("change", function () {
-          // Get the selected value
-          var selectedAttack = this.value;
+        <!-- ======================================
+             CAPABILITIES
+        ======================================= -->
 
-          // Update values based on the selected attack type
-          switch (selectedAttack) {
-            case "dos":
-              document.getElementById("duration").value = 0;
-              document.getElementById("service").value = "ecr_i";
-              document.getElementById("srcBytes").value = 1032;
-              document.getElementById("loggedIn").value = 0;
-              document.getElementById("sameDstnCount").value = 255;
-              document.getElementById("protocolType").value = "icmp";
-              document.getElementById("flag").value = "SF";
-              document.getElementById("dstnBytes").value = 0;
-              document.getElementById("wrongFragment").value = 0;
-              document.getElementById("samePortCount").value = 511;
-              break;
-            case "normal":
-              document.getElementById("duration").value = 0;
-              document.getElementById("service").value = "urp_i";
-              document.getElementById("srcBytes").value = 37;
-              document.getElementById("loggedIn").value = 0;
-              document.getElementById("sameDstnCount").value = 4;
-              document.getElementById("protocolType").value = "icmp";
-              document.getElementById("flag").value = "SF";
-              document.getElementById("dstnBytes").value = 4233;
-              document.getElementById("wrongFragment").value = 0;
-              document.getElementById("samePortCount").value = 1;
-              break;
-            case "u2r":
-              document.getElementById("duration").value = 58;
-              document.getElementById("service").value = "telnet";
-              document.getElementById("srcBytes").value = 2615;
-              document.getElementById("loggedIn").value = 1;
-              document.getElementById("sameDstnCount").value = 1;
-              document.getElementById("protocolType").value = "tcp";
-              document.getElementById("flag").value = "SF";
-              document.getElementById("dstnBytes").value = 4233;
-              document.getElementById("wrongFragment").value = 0;
-              document.getElementById("samePortCount").value = 1;
+        <section>
 
-              break;
-            case "r2l":
-              document.getElementById("duration").value = 0;
-              document.getElementById("service").value = "urp_i";
-              document.getElementById("srcBytes").value = 37;
-              document.getElementById("loggedIn").value = 0;
-              document.getElementById("sameDstnCount").value = 4;
-              document.getElementById("protocolType").value = "icmp";
-              document.getElementById("flag").value = "SF";
-              document.getElementById("dstnBytes").value = 4233;
-              document.getElementById("wrongFragment").value = 0;
-              document.getElementById("samePortCount").value = 1;
-              break;
+            <div class="section-header">
 
-            case "probe":
-              document.getElementById("duration").value = 1;
-              document.getElementById("service").value = "private";
-              document.getElementById("srcBytes").value = 0;
-              document.getElementById("loggedIn").value = 0;
-              document.getElementById("sameDstnCount").value = 178;
-              document.getElementById("protocolType").value = "tcp";
-              document.getElementById("flag").value = "RSTR";
-              document.getElementById("dstnBytes").value = 0;
-              document.getElementById("wrongFragment").value = 0;
-              document.getElementById("samePortCount").value = 2;
-            default:
-              // Handle default case
-              break;
-          }
-        });
-    </script>
+                <p class="section-label">
+                    System Capabilities
+                </p>
+
+                <h2 class="section-title">
+                    Intrusion detection workflow
+                </h2>
+
+                <p class="section-description">
+                    The system combines dataset-based traffic replay,
+                    machine-learning classification and live logging
+                    to demonstrate an end-to-end intrusion detection
+                    workflow.
+                </p>
+
+            </div>
+
+
+            <div class="feature-grid">
+
+                <article class="feature-card">
+
+                    <div class="feature-icon">
+                        <i class="bi bi-database-check"></i>
+                    </div>
+
+                    <h3>KDD Cup 99 Dataset</h3>
+
+                    <p>
+                        Uses labelled KDD Cup 99 network connection
+                        records containing 41 traffic features for
+                        model training and traffic replay.
+                    </p>
+
+                </article>
+
+
+                <article class="feature-card">
+
+                    <div class="feature-icon">
+                        <i class="bi bi-cpu"></i>
+                    </div>
+
+                    <h3>Three ML Models</h3>
+
+                    <p>
+                        Decision Tree, Logistic Regression and
+                        Random Forest independently classify each
+                        processed traffic record.
+                    </p>
+
+                </article>
+
+
+                <article class="feature-card">
+
+                    <div class="feature-icon">
+                        <i class="bi bi-broadcast"></i>
+                    </div>
+
+                    <h3>Real-Time Replay</h3>
+
+                    <p>
+                        Genuine labelled KDD records are replayed
+                        sequentially to simulate a continuously
+                        arriving network traffic stream.
+                    </p>
+
+                </article>
+
+
+                <article class="feature-card">
+
+                    <div class="feature-icon">
+                        <i class="bi bi-clipboard-data"></i>
+                    </div>
+
+                    <h3>Detection Logs</h3>
+
+                    <p>
+                        Recent predictions, final classifications,
+                        known traffic labels and attack types are
+                        presented through a live monitoring console.
+                    </p>
+
+                </article>
+
+            </div>
+
+        </section>
+
+
+        <!-- ======================================
+             ARCHITECTURE
+        ======================================= -->
+
+        <section class="architecture">
+
+            <div class="section-header">
+
+                <p class="section-label">
+                    Architecture
+                </p>
+
+                <h2 class="section-title">
+                    How the system processes traffic
+                </h2>
+
+                <p class="section-description">
+                    Each replayed network connection follows the
+                    same preprocessing and prediction workflow used
+                    by the trained machine-learning pipelines.
+                </p>
+
+            </div>
+
+
+            <div class="architecture-flow">
+
+                <div class="architecture-item">
+
+                    <span class="architecture-number">
+                        01
+                    </span>
+
+                    <h4>Traffic Record</h4>
+
+                    <p>
+                        A labelled KDD Cup 99 connection record
+                        enters the replay stream.
+                    </p>
+
+                </div>
+
+
+                <div class="flow-arrow">
+                    <i class="bi bi-arrow-right"></i>
+                </div>
+
+
+                <div class="architecture-item">
+
+                    <span class="architecture-number">
+                        02
+                    </span>
+
+                    <h4>Preprocessing</h4>
+
+                    <p>
+                        The saved ML pipelines transform categorical
+                        and numerical network features.
+                    </p>
+
+                </div>
+
+
+                <div class="flow-arrow">
+                    <i class="bi bi-arrow-right"></i>
+                </div>
+
+
+                <div class="architecture-item">
+
+                    <span class="architecture-number">
+                        03
+                    </span>
+
+                    <h4>Classification</h4>
+
+                    <p>
+                        Decision Tree, Logistic Regression and
+                        Random Forest generate predictions.
+                    </p>
+
+                </div>
+
+
+                <div class="flow-arrow">
+                    <i class="bi bi-arrow-right"></i>
+                </div>
+
+
+                <div class="architecture-item">
+
+                    <span class="architecture-number">
+                        04
+                    </span>
+
+                    <h4>Final Detection</h4>
+
+                    <p>
+                        Majority voting produces the final Normal
+                        or Attack classification and records it.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <footer class="footer">
+            © 2026 Real-Time Intrusion Detection System
+            &nbsp;•&nbsp;
+            Cybersecurity & Machine Learning
+        </footer>
+
+    </main>
+
+
     <script
-      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
-      integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
-      crossorigin="anonymous"
-    ></script>
-  </body>
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js">
+    </script>
+
+</body>
+
 </html>

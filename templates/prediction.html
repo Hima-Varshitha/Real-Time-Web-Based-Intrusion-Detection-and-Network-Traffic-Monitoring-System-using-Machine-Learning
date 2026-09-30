@@ -1,296 +1,908 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>IDS</title>
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-      integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
-      crossorigin="anonymous"
-    />
-    <link rel="stylesheet" href="../static/styles.css" />
-    <link rel="shortcut icon" href="../static/icon.jpg" type="image/x-icon" />
-  </head>
-  <body>
-    <nav class="navbar navbar-expand-lg bg-body-tertiary" data-bs-theme="dark">
-      <div class="container-fluid">
-        <a class="navbar-brand" href="/">
-          <img
-            src="../static/icon.jpg"
-            alt="Logo"
-            width="30"
-            height="30"
-            class="d-inline-block align-text-top rounded-circle"
-          />
-          IDS
-        </a>
-        <button
-          class="navbar-toggler"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#navbarNav"
-          aria-controls="navbarNav"
-          aria-expanded="false"
-          aria-label="Toggle navigation"
-        >
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-          <ul class="navbar-nav ms-auto">
-            <li class="nav-item">
-              <a class="nav-link" href="/"> Home </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="{{ url_for('pda') }}">Preliminary Data Analysis</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="{{ url_for('features') }}">Features Description</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="/analytics">Analytics</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="/logs">Attack Logs</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="{{ url_for('prediction') }}"> Manual Prediction </a>
-            </li>
-          </ul>
-        </div>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Manual Prediction | IDS</title>
+
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+  />
+
+  <link
+    rel="shortcut icon"
+    href="{{ url_for('static', filename='icon.jpg') }}"
+    type="image/x-icon"
+  />
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: #f6f8fb;
+      color: #172033;
+      font-family: Inter, -apple-system, BlinkMacSystemFont,
+        "Segoe UI", sans-serif;
+    }
+
+    /* =========================
+       NAVIGATION
+    ========================= */
+
+    .topbar {
+      background: #0b1220;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .topbar .container-fluid {
+      min-height: 68px;
+      padding-left: 32px;
+      padding-right: 32px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      color: #ffffff !important;
+      text-decoration: none;
+      font-weight: 700;
+    }
+
+    .brand-logo {
+      width: 34px;
+      height: 34px;
+      border-radius: 9px;
+      object-fit: cover;
+    }
+
+    .brand-name {
+      font-size: 17px;
+    }
+
+    .brand-divider {
+      width: 1px;
+      height: 20px;
+      background: rgba(255, 255, 255, 0.16);
+      margin: 0 4px;
+    }
+
+    .brand-product {
+      color: #94a3b8;
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .topbar .nav-link {
+      color: #94a3b8 !important;
+      font-size: 14px;
+      font-weight: 500;
+      padding: 8px 12px !important;
+      border-radius: 7px;
+      margin-left: 4px;
+    }
+
+    .topbar .nav-link:hover {
+      color: #ffffff !important;
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    .topbar .nav-link.active {
+      color: #ffffff !important;
+      background: rgba(255, 255, 255, 0.09);
+    }
+
+    /* =========================
+       PAGE
+    ========================= */
+
+    .page {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 42px 32px 60px;
+    }
+
+    .page-heading {
+      margin-bottom: 26px;
+    }
+
+    .eyebrow {
+      margin: 0 0 7px;
+      color: #64748b;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .page-title {
+      margin: 0;
+      color: #0f172a;
+      font-size: 31px;
+      font-weight: 750;
+      letter-spacing: -0.8px;
+    }
+
+    .page-description {
+      max-width: 720px;
+      margin: 9px 0 0;
+      color: #64748b;
+      font-size: 14px;
+      line-height: 1.65;
+    }
+
+    /* =========================
+       INFORMATION CARD
+    ========================= */
+
+    .info-card {
+      display: flex;
+      align-items: flex-start;
+      gap: 13px;
+      margin-bottom: 22px;
+      padding: 16px 18px;
+      background: #eff6ff;
+      border: 1px solid #dbeafe;
+      border-radius: 11px;
+    }
+
+    .info-symbol {
+      width: 25px;
+      height: 25px;
+      display: grid;
+      place-items: center;
+      flex: 0 0 25px;
+      background: #dbeafe;
+      color: #2563eb;
+      border-radius: 50%;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .info-title {
+      margin: 0 0 3px;
+      color: #1e3a8a;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .info-text {
+      margin: 0;
+      color: #475569;
+      font-size: 12px;
+      line-height: 1.55;
+    }
+
+    /* =========================
+       FORM CARD
+    ========================= */
+
+    .prediction-card {
+      overflow: hidden;
+      background: #ffffff;
+      border: 1px solid #e5eaf0;
+      border-radius: 14px;
+      box-shadow: 0 2px 6px rgba(15, 23, 42, 0.03);
+    }
+
+    .card-header-area {
+      padding: 21px 24px;
+      background: #fafbfd;
+      border-bottom: 1px solid #edf0f4;
+    }
+
+    .card-header-area h2 {
+      margin: 0;
+      color: #1e293b;
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    .card-header-area p {
+      margin: 5px 0 0;
+      color: #94a3b8;
+      font-size: 12px;
+    }
+
+    .form-body {
+      padding: 26px 24px;
+    }
+
+    /* =========================
+       SECTIONS
+    ========================= */
+
+    .form-section {
+      padding-bottom: 26px;
+      margin-bottom: 26px;
+      border-bottom: 1px solid #edf0f4;
+    }
+
+    .form-section:last-of-type {
+      margin-bottom: 0;
+    }
+
+    .section-heading {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+
+    .section-number {
+      width: 27px;
+      height: 27px;
+      display: grid;
+      place-items: center;
+      background: #eff6ff;
+      color: #2563eb;
+      border-radius: 7px;
+      font-size: 11px;
+      font-weight: 750;
+    }
+
+    .section-title {
+      margin: 0;
+      color: #334155;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+    }
+
+    .field label {
+      display: block;
+      margin-bottom: 7px;
+      color: #334155;
+      font-size: 12px;
+      font-weight: 650;
+    }
+
+    .form-control,
+    .form-select {
+      min-height: 43px;
+      border: 1px solid #dbe2ea;
+      border-radius: 8px;
+      color: #334155;
+      font-size: 13px;
+      box-shadow: none !important;
+    }
+
+    .form-control::placeholder {
+      color: #a7b0bf;
+    }
+
+    .form-control:focus,
+    .form-select:focus {
+      border-color: #93b4f5;
+    }
+
+    .field-help {
+      display: block;
+      margin-top: 6px;
+      color: #94a3b8;
+      font-size: 10px;
+      line-height: 1.4;
+    }
+
+    /* =========================
+       ACTIONS
+    ========================= */
+
+    .form-actions {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 11px;
+      padding-top: 25px;
+    }
+
+    .btn-reset,
+    .btn-analyze {
+      min-height: 44px;
+      padding: 0 20px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 650;
+    }
+
+    .btn-reset {
+      background: #ffffff;
+      color: #475569;
+      border: 1px solid #dbe2ea;
+    }
+
+    .btn-reset:hover {
+      background: #f8fafc;
+    }
+
+    .btn-analyze {
+      background: #2563eb;
+      color: #ffffff;
+      border: 1px solid #2563eb;
+    }
+
+    .btn-analyze:hover {
+      background: #1d4ed8;
+    }
+
+    /* =========================
+       FOOTER
+    ========================= */
+
+    .footer {
+      padding-top: 31px;
+      color: #94a3b8;
+      font-size: 12px;
+      text-align: center;
+    }
+
+    @media (max-width: 700px) {
+      .page {
+        padding: 30px 18px 45px;
+      }
+
+      .topbar .container-fluid {
+        padding-left: 18px;
+        padding-right: 18px;
+      }
+
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .brand-divider,
+      .brand-product {
+        display: none;
+      }
+
+      .form-actions {
+        flex-direction: column-reverse;
+      }
+
+      .btn-reset,
+      .btn-analyze {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- =========================
+       NAVIGATION
+  ========================== -->
+
+  <nav class="navbar navbar-expand-lg topbar" data-bs-theme="dark">
+    <div class="container-fluid">
+
+      <a class="brand" href="/">
+        <img
+          src="{{ url_for('static', filename='icon.jpg') }}"
+          alt="IDS"
+          class="brand-logo"
+        />
+
+        <span class="brand-name">IDS</span>
+        <span class="brand-divider"></span>
+        <span class="brand-product">Security Console</span>
+      </a>
+
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-bs-toggle="collapse"
+        data-bs-target="#mainNavigation"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div
+        class="collapse navbar-collapse"
+        id="mainNavigation"
+      >
+        <ul class="navbar-nav ms-auto">
+
+          <li class="nav-item">
+            <a class="nav-link" href="/">
+              Home
+            </a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link" href="/logs">
+              Detection Logs
+            </a>
+          </li>
+
+          <li class="nav-item">
+            <a
+              class="nav-link active"
+              href="{{ url_for('prediction') }}"
+            >
+              Manual Prediction
+            </a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link" href="/model-performance">
+              Model Performance
+            </a>
+          </li>
+
+        </ul>
       </div>
-    </nav>
 
-    <div class="container custom-border">
-      <form method="POST" action="{{ url_for('results') }}">  
-        <div class="container mb-4 text-center">
+    </div>
+  </nav>
 
-            <label class="form-label fw-bold">
-                Enter Network Traffic Features for Prediction
-            </label>
 
-            <p class="text-muted">
-                The Machine Learning models will analyze the input
-                and classify the traffic automatically.
-            </p>
+  <!-- =========================
+       PAGE CONTENT
+  ========================== -->
 
-        </div>
-        <div class="row">
-          <!-- First Column -->
-          <div class="col-md-6">
-            <div class="mb-3">
-              <label for="duration" class="form-label">Duration</label>
-              <input
-                type="number"
-                class="form-control"
-                id="duration"
-                name="duration"
-                placeholder="Length of time duration of the connection"
-              />
-            </div>
-            <div class="mb-3">
-              <label for="service" class="form-label">Service</label>
-              <input
-                type="text"
-                class="form-control"
-                id="service"
-                name="service"
-                placeholder="Destination network service used"
-              />
-            </div>
-            <div class="mb-3">
-              <label for="srcBytes" class="form-label">Src Bytes</label>
-              <input
-                type="number"
-                class="form-control"
-                id="srcBytes"
-                name="srcBytes"
-                placeholder="Number of data bytes transferred from src to dest"
-              />
-            </div>
-            <div class="mb-3">
-              <label for="loggedIn" class="form-label">Logged In</label>
-              <select class="form-select" id="loggedIn" name="loggedIn">
-                <option value="" disabled selected>Login Status</option>
-                <option value="1">Yes</option>
-                <option value="0">No</option>
-              </select>
-            </div>
-            <div class="mb-3">
-              <label for="sameDstnCount" class="form-label"
-                >Same Dstn Count</label
-              >
-              <input
-                type="number"
-                class="form-control"
-                id="sameDstnCount"
-                name="sameDstnCount"
-                placeholder="Number of connections to the same destination"
-              />
-            </div>
-          </div>
-          <!-- Second Column -->
-          <div class="col-md-6">
-            <div class="mb-3">
-              <label for="protocolType" class="form-label">Protocol Type</label>
-              <select class="form-select" id="protocolType" name="protocolType">
-                <option value="" disabled selected>
-                  Protocol used in the connection
-                </option>
-                <option value="tcp">TCP</option>
-                <option value="udp">UDP</option>
-                <option value="icmp">ICMP</option>
-              </select>
-            </div>
-            <div class="mb-3">
-              <label for="flag" class="form-label">Flag</label>
-              <input
-                type="text"
-                class="form-control"
-                id="flag"
-                name="flag"
-                placeholder="Flag type (SF, S0 or REJ)"
-              />
-            </div>
-            <div class="mb-3">
-              <label for="dstnBytes" class="form-label">Dstn Bytes</label>
-              <input
-                type="number"
-                class="form-control"
-                id="dstnBytes"
-                name="dstnBytes"
-                placeholder="Number of data bytes transferred from dest to src"
-              />
-            </div>
-            <div class="mb-3">
-              <label for="wrongFragment" class="form-label"
-                >Wrong Fragment</label
-              >
-              <select
-                class="form-select"
-                id="wrongFragment"
-                name="wrongFragment"
-              >
-                <option value="" disabled selected>
-                  Total number of wrong fragments in this connection
-                </option>
-                <option value="0">0 - None</option>
-                <option value="1">1 - Low</option>
-                <option value="3">3 - High</option>
-              </select>
-            </div>
-            <div class="mb-3">
-              <label for="samePortCount" class="form-label"
-                >Same Port Count</label
-              >
-              <input
-                type="number"
-                class="form-control"
-                id="samePortCount"
-                name="samePortCount"
-                placeholder="Number of connections to the same service (port number)"
-              />
-            </div>
-          </div>
-        </div>
-        <!-- Buttons -->
-        <div class="mb-3 text-center">
-          <button type="reset" class="btn btn-warning me-4">Reset Form</button>
-          <button type="submit" class="btn btn-success ms-4">Submit</button>
-        </div>
-      </form>
+  <main class="page">
+
+    <header class="page-heading">
+
+      <p class="eyebrow">
+        Intrusion Classification
+      </p>
+
+      <h1 class="page-title">
+        Manual Traffic Prediction
+      </h1>
+
+      <p class="page-description">
+        Enter key network connection characteristics to perform
+        a manual intrusion-detection test using the trained
+        machine-learning models.
+      </p>
+
+    </header>
+
+
+    <!-- INFORMATION -->
+
+    <div class="info-card">
+
+      <div class="info-symbol">i</div>
+
+      <div>
+        <p class="info-title">
+          Simplified manual testing
+        </p>
+
+        <p class="info-text">
+          This interface collects 10 user-friendly traffic
+          characteristics. The detection backend constructs the
+          complete KDD feature record required by the trained
+          classification pipelines.
+        </p>
+      </div>
+
     </div>
 
-    <footer class="footer text-center mt-5">
-    <h6 class="footer__title">
-        © 2026 Real-Time Intrusion Detection System
-    </h6>
-    <p style="font-size:14px;">
-        Final Year Project | Cybersecurity & Machine Learning
-    </p>
+
+    <!-- =========================
+         PREDICTION FORM
+    ========================== -->
+
+    <div class="prediction-card">
+
+      <div class="card-header-area">
+
+        <h2>Network Traffic Input</h2>
+
+        <p>
+          Complete the fields below and submit the record for analysis.
+        </p>
+
+      </div>
+
+
+      <form
+        method="POST"
+        action="{{ url_for('results') }}"
+      >
+
+        <div class="form-body">
+
+
+          <!-- =========================
+               SECTION 1
+          ========================== -->
+
+          <section class="form-section">
+
+            <div class="section-heading">
+              <div class="section-number">01</div>
+              <h3 class="section-title">
+                Connection Details
+              </h3>
+            </div>
+
+
+            <div class="form-grid">
+
+              <div class="field">
+
+                <label for="duration">
+                  Connection Duration
+                </label>
+
+                <input
+                  type="number"
+                  class="form-control"
+                  id="duration"
+                  name="duration"
+                  min="0"
+                  placeholder="Example: 0"
+                  required
+                />
+
+                <span class="field-help">
+                  Duration of the network connection.
+                </span>
+
+              </div>
+
+
+              <div class="field">
+
+                <label for="protocolType">
+                  Protocol Type
+                </label>
+
+                <select
+                  class="form-select"
+                  id="protocolType"
+                  name="protocolType"
+                  required
+                >
+
+                  <option value="" selected disabled>
+                    Select protocol
+                  </option>
+
+                  <option value="tcp">TCP</option>
+                  <option value="udp">UDP</option>
+                  <option value="icmp">ICMP</option>
+
+                </select>
+
+                <span class="field-help">
+                  Communication protocol used by the connection.
+                </span>
+
+              </div>
+
+
+              <div class="field">
+
+                <label for="service">
+                  Network Service
+                </label>
+
+                <select
+                  class="form-select"
+                  id="service"
+                  name="service"
+                  required
+                >
+
+                  <option value="" selected disabled>
+                    Select service
+                  </option>
+
+                  <option value="http">HTTP</option>
+                  <option value="private">Private</option>
+                  <option value="domain_u">Domain U</option>
+                  <option value="smtp">SMTP</option>
+                  <option value="ftp_data">FTP Data</option>
+                  <option value="ftp">FTP</option>
+                  <option value="eco_i">ECO I</option>
+                  <option value="ecr_i">ECR I</option>
+                  <option value="telnet">Telnet</option>
+                  <option value="auth">Auth</option>
+                  <option value="finger">Finger</option>
+                  <option value="pop_3">POP3</option>
+                  <option value="urp_i">URP I</option>
+                  <option value="ntp_u">NTP U</option>
+                  <option value="other">Other</option>
+
+                </select>
+
+                <span class="field-help">
+                  Destination network service associated with the connection.
+                </span>
+
+              </div>
+
+
+              <div class="field">
+
+                <label for="flag">
+                  Connection Flag
+                </label>
+
+                <select
+                  class="form-select"
+                  id="flag"
+                  name="flag"
+                  required
+                >
+
+                  <option value="" selected disabled>
+                    Select connection flag
+                  </option>
+
+                  <option value="SF">SF</option>
+                  <option value="S0">S0</option>
+                  <option value="REJ">REJ</option>
+                  <option value="RSTR">RSTR</option>
+                  <option value="RSTO">RSTO</option>
+                  <option value="SH">SH</option>
+                  <option value="S1">S1</option>
+                  <option value="S2">S2</option>
+                  <option value="S3">S3</option>
+                  <option value="OTH">OTH</option>
+                  <option value="RSTOS0">RSTOS0</option>
+
+                </select>
+
+                <span class="field-help">
+                  Status of the network connection.
+                </span>
+
+              </div>
+
+            </div>
+
+          </section>
+
+
+          <!-- =========================
+               SECTION 2
+          ========================== -->
+
+          <section class="form-section">
+
+            <div class="section-heading">
+              <div class="section-number">02</div>
+              <h3 class="section-title">
+                Traffic Details
+              </h3>
+            </div>
+
+
+            <div class="form-grid">
+
+              <div class="field">
+
+                <label for="srcBytes">
+                  Source Bytes
+                </label>
+
+                <input
+                  type="number"
+                  class="form-control"
+                  id="srcBytes"
+                  name="srcBytes"
+                  min="0"
+                  placeholder="Example: 181"
+                  required
+                />
+
+                <span class="field-help">
+                  Bytes transferred from source to destination.
+                </span>
+
+              </div>
+
+
+              <div class="field">
+
+                <label for="dstnBytes">
+                  Destination Bytes
+                </label>
+
+                <input
+                  type="number"
+                  class="form-control"
+                  id="dstnBytes"
+                  name="dstnBytes"
+                  min="0"
+                  placeholder="Example: 5450"
+                  required
+                />
+
+                <span class="field-help">
+                  Bytes transferred from destination to source.
+                </span>
+
+              </div>
+
+
+              <div class="field">
+
+                <label for="wrongFragment">
+                  Wrong Fragments
+                </label>
+
+                <select
+                  class="form-select"
+                  id="wrongFragment"
+                  name="wrongFragment"
+                  required
+                >
+
+                  <option value="" selected disabled>
+                    Select fragment count
+                  </option>
+
+                  <option value="0">0 - None</option>
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+
+                </select>
+
+                <span class="field-help">
+                  Number of incorrect fragments detected.
+                </span>
+
+              </div>
+
+
+              <div class="field">
+
+                <label for="loggedIn">
+                  Login Status
+                </label>
+
+                <select
+                  class="form-select"
+                  id="loggedIn"
+                  name="loggedIn"
+                  required
+                >
+
+                  <option value="" selected disabled>
+                    Select login status
+                  </option>
+
+                  <option value="1">Logged In</option>
+                  <option value="0">Not Logged In</option>
+
+                </select>
+
+                <span class="field-help">
+                  Indicates whether login was successful.
+                </span>
+
+              </div>
+
+            </div>
+
+          </section>
+
+
+          <!-- =========================
+               SECTION 3
+          ========================== -->
+
+          <section class="form-section">
+
+            <div class="section-heading">
+              <div class="section-number">03</div>
+              <h3 class="section-title">
+                Connection Statistics
+              </h3>
+            </div>
+
+
+            <div class="form-grid">
+
+              <div class="field">
+
+                <label for="samePortCount">
+                  Same Service Count
+                </label>
+
+                <input
+                  type="number"
+                  class="form-control"
+                  id="samePortCount"
+                  name="samePortCount"
+                  min="0"
+                  placeholder="Example: 9"
+                  required
+                />
+
+                <span class="field-help">
+                  Number of recent connections using the same service.
+                </span>
+
+              </div>
+
+
+              <div class="field">
+
+                <label for="sameDstnCount">
+                  Destination Host Count
+                </label>
+
+                <input
+                  type="number"
+                  class="form-control"
+                  id="sameDstnCount"
+                  name="sameDstnCount"
+                  min="0"
+                  placeholder="Example: 9"
+                  required
+                />
+
+                <span class="field-help">
+                  Number of recent connections associated with the destination host.
+                </span>
+
+              </div>
+
+            </div>
+
+          </section>
+
+
+          <!-- ACTIONS -->
+
+          <div class="form-actions">
+
+            <button
+              type="reset"
+              class="btn-reset"
+            >
+              Reset Form
+            </button>
+
+            <button
+              type="submit"
+              class="btn-analyze"
+            >
+              Analyze Traffic
+            </button>
+
+          </div>
+
+        </div>
+
+      </form>
+
+    </div>
+
+
+    <footer class="footer">
+      © 2026 Real-Time Intrusion Detection System
+      &nbsp;•&nbsp;
+      Cybersecurity & Machine Learning
     </footer>
-    <script>
-      // Event listener for the attackType dropdown
-      document
-        .getElementById("attackType")
-        .addEventListener("change", function () {
-          // Get the selected value
-          var selectedAttack = this.value;
 
-          // Update values based on the selected attack type
-          switch (selectedAttack) {
-            case "dos":
-              document.getElementById("duration").value = 0;
-              document.getElementById("service").value = "ecr_i";
-              document.getElementById("srcBytes").value = 1032;
-              document.getElementById("loggedIn").value = 0;
-              document.getElementById("sameDstnCount").value = 255;
-              document.getElementById("protocolType").value = "icmp";
-              document.getElementById("flag").value = "SF";
-              document.getElementById("dstnBytes").value = 0;
-              document.getElementById("wrongFragment").value = 0;
-              document.getElementById("samePortCount").value = 511;
-              break;
-            case "normal":
-              document.getElementById("duration").value = 0;
-              document.getElementById("service").value = "urp_i";
-              document.getElementById("srcBytes").value = 37;
-              document.getElementById("loggedIn").value = 0;
-              document.getElementById("sameDstnCount").value = 4;
-              document.getElementById("protocolType").value = "icmp";
-              document.getElementById("flag").value = "SF";
-              document.getElementById("dstnBytes").value = 4233;
-              document.getElementById("wrongFragment").value = 0;
-              document.getElementById("samePortCount").value = 1;
-              break;
-            case "u2r":
-              document.getElementById("duration").value = 58;
-              document.getElementById("service").value = "telnet";
-              document.getElementById("srcBytes").value = 2615;
-              document.getElementById("loggedIn").value = 1;
-              document.getElementById("sameDstnCount").value = 1;
-              document.getElementById("protocolType").value = "tcp";
-              document.getElementById("flag").value = "SF";
-              document.getElementById("dstnBytes").value = 4233;
-              document.getElementById("wrongFragment").value = 0;
-              document.getElementById("samePortCount").value = 1;
+  </main>
 
-              break;
-            case "r2l":
-              document.getElementById("duration").value = 0;
-              document.getElementById("service").value = "urp_i";
-              document.getElementById("srcBytes").value = 37;
-              document.getElementById("loggedIn").value = 0;
-              document.getElementById("sameDstnCount").value = 4;
-              document.getElementById("protocolType").value = "icmp";
-              document.getElementById("flag").value = "SF";
-              document.getElementById("dstnBytes").value = 4233;
-              document.getElementById("wrongFragment").value = 0;
-              document.getElementById("samePortCount").value = 1;
-              break;
 
-            case "probe":
-              document.getElementById("duration").value = 1;
-              document.getElementById("service").value = "private";
-              document.getElementById("srcBytes").value = 0;
-              document.getElementById("loggedIn").value = 0;
-              document.getElementById("sameDstnCount").value = 178;
-              document.getElementById("protocolType").value = "tcp";
-              document.getElementById("flag").value = "RSTR";
-              document.getElementById("dstnBytes").value = 0;
-              document.getElementById("wrongFragment").value = 0;
-              document.getElementById("samePortCount").value = 2;
-            default:
-              // Handle default case
-              break;
-          }
-        });
-    </script>
-    <script
-      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
-      integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
-      crossorigin="anonymous"
-    ></script>
-  </body>
+  <script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js">
+  </script>
+
+</body>
 </html>
